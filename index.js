@@ -23,11 +23,18 @@ async function run() {
       // connection check
       const database = client.db("tour_and_travels");
       const packagesCollection = database.collection("packages");
+      const serviceCollection = database.collection("services");
       console.log("connected to db");
 
       // packages: GET API
       app.get("/packages", async (req, res) => {
          const cursor = packagesCollection.find({});
+         const packages = await cursor.toArray();
+         res.send(packages);
+      });
+      // services: GET API
+      app.get("/services", async (req, res) => {
+         const cursor = serviceCollection.find({});
          const packages = await cursor.toArray();
          res.send(packages);
       });
