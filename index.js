@@ -19,16 +19,28 @@ const client = new MongoClient(uri, {
 async function run() {
    try {
       await client.connect();
+
+      // connection check
+      const database = client.db("tour_and_travels");
+      const packagesCollection = database.collection("packages");
+      console.log("connected to db");
+
+      // packages: GET API
+      app.get("/packages", async (req, res) => {
+         const cursor = packagesCollection.find({});
+         const packages = await cursor.toArray();
+         res.send(packages);
+      });
    } finally {
-      await client.close();
+      // await client.close();
    }
 }
 run().catch(console.dir);
 
 app.get("/", (req, res) => {
-   res.send("assignment server running");
+   res.send("tour and travels server running");
 });
 
 app.listen(port, () => {
-   console.log("assignment11 server running on port", port);
+   console.log("tour and travels server running on port", port);
 });
