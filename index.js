@@ -24,6 +24,7 @@ async function run() {
       const database = client.db("tour_and_travels");
       const packagesCollection = database.collection("packages");
       const serviceCollection = database.collection("services");
+      const galleryCollection = database.collection("gallery");
       console.log("connected to db");
 
       // packages: GET API
@@ -35,8 +36,14 @@ async function run() {
       // services: GET API
       app.get("/services", async (req, res) => {
          const cursor = serviceCollection.find({});
-         const packages = await cursor.toArray();
-         res.send(packages);
+         const services = await cursor.toArray();
+         res.send(services);
+      });
+      // gallery: GET API
+      app.get("/gallery", async (req, res) => {
+         const cursor = galleryCollection.find({});
+         const gallery = await cursor.toArray();
+         res.send(gallery);
       });
    } finally {
       // await client.close();
