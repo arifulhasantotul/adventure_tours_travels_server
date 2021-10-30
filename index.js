@@ -67,6 +67,22 @@ async function run() {
          console.log("added package", result);
          res.json(result);
       });
+      // service: POST API
+      app.post("/services", async (req, res) => {
+         const newService = req.body;
+         const result = await packagesCollection.insertOne(newService);
+         console.log("got new package", req.body);
+         console.log("added package", result);
+         res.json(result);
+      });
+      // gallery: POST API
+      app.post("/gallery", async (req, res) => {
+         const newPhoto = req.body;
+         const result = await packagesCollection.insertOne(newPhoto);
+         console.log("got new package", req.body);
+         console.log("added package", result);
+         res.json(result);
+      });
    } finally {
       // await client.close();
    }
