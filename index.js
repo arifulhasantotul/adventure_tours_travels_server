@@ -27,6 +27,7 @@ async function run() {
       const packagesCollection = database.collection("packages");
       const serviceCollection = database.collection("services");
       const galleryCollection = database.collection("gallery");
+      const orderCollection = database.collection("orders");
       console.log("connected to db");
 
       // packages: GET API
@@ -59,6 +60,13 @@ async function run() {
       });
       // get single gallery
 
+      // gallery: GET API
+      app.get("/orders", async (req, res) => {
+         const cursor = orderCollection.find({});
+         const orders = await cursor.toArray();
+         res.send(orders);
+      });
+
       // package: POST API
       app.post("/packages", async (req, res) => {
          const newPackage = req.body;
@@ -79,6 +87,14 @@ async function run() {
       app.post("/gallery", async (req, res) => {
          const newPhoto = req.body;
          const result = await galleryCollection.insertOne(newPhoto);
+         console.log("got new package", req.body);
+         console.log("added package", result);
+         res.json(result);
+      });
+      // order: POST API
+      app.post("/orders", async (req, res) => {
+         const newOrder = req.body;
+         const result = await orderCollection.insertOne(newOrder);
          console.log("got new package", req.body);
          console.log("added package", result);
          res.json(result);
