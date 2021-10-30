@@ -2,10 +2,12 @@ const express = require("express");
 const { MongoClient } = require("mongodb");
 const cors = require("cors");
 require("dotenv").config();
+const ObjectId = require("mongodb").ObjectId;
 
 const app = express();
 const port = process.env.PORT || 8080;
 
+// middleware
 app.use(cors());
 app.use(express.json());
 
@@ -33,17 +35,37 @@ async function run() {
          const packages = await cursor.toArray();
          res.send(packages);
       });
+      // get single package
+      app.get("/packages/:id", async (req, res) => {
+         const id = req.params.id;
+         const query = { _id: ObjectId(id) };
+         const package = await packagesCollection.findOne(query);
+         res.json(package);
+      });
+
       // services: GET API
       app.get("/services", async (req, res) => {
          const cursor = serviceCollection.find({});
          const services = await cursor.toArray();
          res.send(services);
       });
+      // get single service
+
       // gallery: GET API
       app.get("/gallery", async (req, res) => {
          const cursor = galleryCollection.find({});
          const gallery = await cursor.toArray();
          res.send(gallery);
+      });
+      // get single gallery
+
+      // package: POST API
+      app.post("/packages", async (req, res) => {
+         const newPackage = req.body;
+         const result = await packagesCollection.insertOne(newPackage);
+         console.log("got new package", req.body);
+         console.log("added package", result);
+         res.json(result);
       });
    } finally {
       // await client.close();
