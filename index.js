@@ -99,6 +99,15 @@ async function run() {
          console.log("added package", result);
          res.json(result);
       });
+
+      // package: DELETE API
+      app.delete("/orders/:id", async (req, res) => {
+         const id = req.params.id;
+         const query = { _id: ObjectId(id) };
+         const result = await orderCollection.deleteOne(query);
+         console.log("deleted result", result);
+         res.json(result);
+      });
    } finally {
       // await client.close();
    }
