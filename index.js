@@ -70,7 +70,7 @@ async function run() {
       // service: POST API
       app.post("/services", async (req, res) => {
          const newService = req.body;
-         const result = await packagesCollection.insertOne(newService);
+         const result = await serviceCollection.insertOne(newService);
          console.log("got new package", req.body);
          console.log("added package", result);
          res.json(result);
@@ -78,7 +78,7 @@ async function run() {
       // gallery: POST API
       app.post("/gallery", async (req, res) => {
          const newPhoto = req.body;
-         const result = await packagesCollection.insertOne(newPhoto);
+         const result = await galleryCollection.insertOne(newPhoto);
          console.log("got new package", req.body);
          console.log("added package", result);
          res.json(result);
