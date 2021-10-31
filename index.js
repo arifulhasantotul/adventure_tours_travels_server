@@ -28,6 +28,7 @@ async function run() {
       const serviceCollection = database.collection("services");
       const galleryCollection = database.collection("gallery");
       const orderCollection = database.collection("orders");
+      const bookingCollection = database.collection("bookings");
       console.log("connected to db");
 
       // packages: GET API
@@ -66,6 +67,12 @@ async function run() {
          const orders = await cursor.toArray();
          res.send(orders);
       });
+      // gallery: GET API
+      app.get("/bookings", async (req, res) => {
+         const cursor = bookingCollection.find({});
+         const bookings = await cursor.toArray();
+         res.send(bookings);
+      });
 
       // package: POST API
       app.post("/packages", async (req, res) => {
@@ -95,6 +102,14 @@ async function run() {
       app.post("/orders", async (req, res) => {
          const newOrder = req.body;
          const result = await orderCollection.insertOne(newOrder);
+         console.log("got new package", req.body);
+         console.log("added package", result);
+         res.json(result);
+      });
+      // order: POST API
+      app.post("/bookings", async (req, res) => {
+         const newBooking = req.body;
+         const result = await bookingCollection.insertOne(newBooking);
          console.log("got new package", req.body);
          console.log("added package", result);
          res.json(result);
