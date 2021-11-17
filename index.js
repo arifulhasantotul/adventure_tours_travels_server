@@ -29,6 +29,10 @@ async function run() {
       const galleryCollection = database.collection("gallery");
       const orderCollection = database.collection("orders");
       const bookingCollection = database.collection("bookings");
+      // symon collection
+      const foodItems = database.collection("foodItems");
+      const orders = database.collection("orders");
+
       console.log("connected to db");
 
       // packages: GET API
@@ -142,6 +146,85 @@ async function run() {
          );
          console.log("updating order status", req.body);
          res.json(result);
+
+         // -----------------------------
+         // symon api
+         app.post("/add_new_item", async (req, res) => {
+            const newItem = req.body;
+            try {
+               const savedItem = await foodItems.insertOne(newItem);
+               res.status(200).json(savedItem);
+            } catch (error) {
+               res.status(400).json(error.message);
+            }
+         });
+         app.get("/hello", (req, res) => {
+            console.log("hello");
+            res.send("hello world");
+         });
+         app.get("/all_items", async (req, res) => {
+            try {
+               const allItems = await foodItems.find().toArray();
+               res.status(200).json(allItems);
+            } catch (error) {
+               res.status(400).json(error.message);
+            }
+         });
+
+         app.get("/product/:id", async (req, res) => {
+            const productId = req.params.id;
+            try {
+               const product = await foodItems.findOne({
+                  _id: new ObjectId(productId),
+               });
+               res.status(200).json(product);
+            } catch (error) {
+               res.status(400).json(error.message);
+            }
+         });
+
+         app.post("/create_order/:id", async (req, res) => {
+            const productId = req.params.id;
+            const newItem = { productId, ...req.body };
+            try {
+               const savedItem = await orders.insertOne(newItem);
+               res.status(200).json(savedItem);
+            } catch (error) {
+               res.status(400).json(error.message);
+            }
+         });
+
+         app.get("/all_orders", async (req, res) => {
+            try {
+               const allItems = await orders.find().toArray();
+               res.status(200).json(allItems);
+            } catch (error) {
+               res.status(400).json(error.message);
+            }
+         });
+
+         app.put("/updateStatus/:id", async (req, res) => {
+            const orderId = req.params.id;
+            try {
+               const order = await orders.updateOne(
+                  { _id: orderId },
+                  { $set: { status: "Approved" } }
+               );
+               res.status(200).json(order);
+            } catch (error) {
+               res.status(400).json(error.message);
+            }
+         });
+
+         app.delete("/delete_order/:id", async (req, res) => {
+            const orderId = req.params.id;
+            try {
+               const order = await orders.deleteOne({ _id: orderId });
+               res.status(200).json(order);
+            } catch (error) {
+               res.status(400).json(error.message);
+            }
+         });
       });
    } finally {
       // await client.close();
